@@ -6,6 +6,15 @@
 
 [DEMO](https://rgalus.github.io/sticky-js/)
 
+---
+
+## IMPORTANT NOTICE
+
+The `PRs` branch is only meant to provide a quick way to access my own PRs in production before they are merged/released.
+Don't rely on this branch being present forever!
+
+---
+
 ## Features
 
 - Written in vanilla javascript, no dependencies needed
