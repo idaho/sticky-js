@@ -102,7 +102,7 @@ function () {
         };
       }
 
-      if (element.sticky.wrap) {
+      if (element.sticky.wrap && element.parentNode.getAttribute('data-sticky-wrapper') === null) {
         this.wrapElement(element);
       } // activate rendered element
 
