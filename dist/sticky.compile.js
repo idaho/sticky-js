@@ -122,6 +122,20 @@ function () {
       element.previousSibling.appendChild(element);
     }
     /**
+     * Resets the wrapper width & height to allow correct computation of element's rectangle
+     * @function
+     * @param {node} element - Element that is wrapped
+     */
+
+  }, {
+    key: "resetWrapperRectangle",
+    value: function resetWrapperRectangle(element) {
+      this.css(element.parentNode, {
+        width: '',
+        height: ''
+      });
+    }
+    /**
      * Function that activates element when specified conditions are met and then initalise events
      * @function
      * @param {node} element - Element to be activated
@@ -188,6 +202,11 @@ function () {
     key: "onResizeEvents",
     value: function onResizeEvents(element) {
       this.vp = this.getViewportSize();
+
+      if (element.sticky.wrap) {
+        this.resetWrapperRectangle(element);
+      }
+
       element.sticky.rect = this.getRectangle(element);
       element.sticky.container.rect = this.getRectangle(element.sticky.container);
 
@@ -260,6 +279,10 @@ function () {
         return;
       }
 
+      if (element.sticky.wrap) {
+        this.resetWrapperRectangle(element);
+      }
+
       if (!element.sticky.rect.width) {
         element.sticky.rect = this.getRectangle(element);
       }
@@ -279,6 +302,10 @@ function () {
           left: element.sticky.rect.left + 'px',
           width: element.sticky.rect.width + 'px'
         });
+
+        if (element.sticky.stickyClass) {
+          element.classList.add(element.sticky.stickyClass);
+        }
       } else if (this.scrollTop > element.sticky.rect.top - element.sticky.marginTop) {
         this.css(element, {
           position: 'fixed',
@@ -335,6 +362,10 @@ function () {
       var _this5 = this;
 
       this.forEach(this.elements, function (element) {
+        if (element.sticky.wrap) {
+          _this5.resetWrapperRectangle(element);
+        }
+
         element.sticky.rect = _this5.getRectangle(element);
         element.sticky.container.rect = _this5.getRectangle(element.sticky.container);
 
