@@ -3,7 +3,7 @@
  * Sticky.js
  * Library for sticky elements written in vanilla javascript. With this library you can easily set sticky elements on your website. It's also responsive.
  *
- * @version 1.2.2
+ * @version 1.3.0
  * @author Rafal Galus <biuro@rafalgalus.pl>
  * @website https://rgalus.github.io/sticky-js/
  * @repo https://github.com/rgalus/sticky-js
@@ -21,14 +21,16 @@ class Sticky {
     this.selector = selector;
     this.elements = [];
 
-    this.version = '1.2.2';
+    this.version = '1.3.0';
 
     this.vp = this.getViewportSize();
     this.body = document.querySelector('body');
 
     this.options = {
       wrap: options.wrap || false,
+      wrapWith: options.wrapWith || '<span></span>',
       marginTop: options.marginTop || 0,
+      marginBottom: options.marginBottom || 0,
       anchor: options.anchor || null,
       stickyFor: options.stickyFor || 0,
       stickyClass: options.stickyClass || null,
@@ -75,6 +77,7 @@ class Sticky {
     element.sticky.active = false;
 
     element.sticky.marginTop = parseInt(element.getAttribute('data-margin-top')) || this.options.marginTop;
+    element.sticky.marginBottom = parseInt(element.getAttribute('data-margin-bottom')) || this.options.marginBottom;
     element.sticky.anchorId = element.getAttribute('data-anchor') || this.options.anchor;
     element.sticky.anchor = element.sticky.anchorId ? document.querySelector('#' + element.sticky.anchorId) : null;
     element.sticky.stickyFor = parseInt(element.getAttribute('data-sticky-for')) || this.options.stickyFor;
@@ -109,7 +112,7 @@ class Sticky {
    * @param {node} element - Element to be wrapped
    */
   wrapElement(element) {
-    element.insertAdjacentHTML('beforebegin', '<span></span>');
+    element.insertAdjacentHTML('beforebegin', element.getAttribute('data-sticky-wrapWith') || this.options.wrapWith);
     element.previousSibling.appendChild(element);
   }
 
@@ -238,7 +241,7 @@ class Sticky {
    * @param {node} element - Element for which event function is fired
    */
    onScrollEvents(element) {
-    if (element.sticky.active) {
+    if (element.sticky && element.sticky.active) {
       this.setPosition(element);
     }
    }
@@ -301,7 +304,7 @@ class Sticky {
 
       if (
         (this.scrollTop + element.sticky.rect.height + element.sticky.marginTop)
-        > (element.sticky.container.rect.top + element.sticky.container.offsetHeight)
+        > (element.sticky.container.rect.top + element.sticky.container.offsetHeight - element.sticky.marginBottom)
       ) {
 
         if (element.sticky.stickyClass) {
@@ -314,7 +317,7 @@ class Sticky {
           );
         } else {
           this.css(element, {
-            top: (element.sticky.container.rect.top + element.sticky.container.offsetHeight) - (this.scrollTop + element.sticky.rect.height) + 'px' }
+            top: (element.sticky.container.rect.top + element.sticky.container.offsetHeight) - (this.scrollTop + element.sticky.rect.height + element.sticky.marginBottom) + 'px' }
           );
         }
       } else {
@@ -323,7 +326,7 @@ class Sticky {
         }
 
         if (passedAnchor) {
-          this.css(element, { top: element.sticky.marginTop + anchorTop - wrapperTop - elementHeight + 'px' });
+          this.css(element, { top: anchorTop - wrapperTop - elementHeight + 'px' });
         } else {
           this.css(element, { top: element.sticky.marginTop + 'px' });
         }
