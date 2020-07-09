@@ -213,8 +213,8 @@ function () {
         this.resetWrapperRectangle(element);
       }
 
-      element.sticky.rect = this.getRectangle(element);
-      element.sticky.container.rect = this.getRectangle(element.sticky.container);
+      element.sticky.rect = this.getRectangle(element, false);
+      element.sticky.container.rect = this.getRectangle(element.sticky.container, false);
 
       if (element.sticky.rect.top + element.sticky.rect.height < element.sticky.container.rect.top + element.sticky.container.rect.height && element.sticky.stickyFor < this.vp.width && !element.sticky.active) {
         element.sticky.active = true;
@@ -446,13 +446,13 @@ function () {
 
   }, {
     key: "getRectangle",
-    value: function getRectangle(element) {
+    value: function getRectangle(element, useAnimationFrame) {
       this.css(element, {
         position: '',
         width: '',
         top: '',
         left: ''
-      });
+      }, useAnimationFrame);
       var width = Math.max(element.offsetWidth, element.clientWidth, element.scrollWidth);
       var height = Math.max(element.offsetHeight, element.clientHeight, element.scrollHeight);
       var top = 0;
@@ -515,14 +515,25 @@ function () {
      * @helper
      * @param {node} element - DOM element
      * @param {object} properties - CSS properties that will be added/removed from specified element
+     * @param {boolean} useAnimationFrame - if true requestAnimationFrame is used
      */
 
   }, {
     key: "css",
-    value: function css(element, properties) {
-      for (var property in properties) {
-        if (properties.hasOwnProperty(property)) {
-          element.style[property] = properties[property];
+    value: function css(element, properties, useAnimationFrame) {
+      if (useAnimationFrame !== false) {
+        window.requestAnimationFrame(function () {
+          for (var property in properties) {
+            if (properties.hasOwnProperty(property)) {
+              element.style[property] = properties[property];
+            }
+          }
+        });
+      } else {
+        for (var property in properties) {
+          if (properties.hasOwnProperty(property)) {
+            element.style[property] = properties[property];
+          }
         }
       }
     }
