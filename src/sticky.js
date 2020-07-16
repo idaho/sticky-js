@@ -217,7 +217,7 @@ class Sticky {
       element.sticky.active = false;
     }
 
-    this.setPosition(element);
+    this.setPosition(element, false);
    }
 
 
@@ -263,8 +263,8 @@ class Sticky {
    * @function
    * @param {node} element - Element that will be positioned if it's active
    */
-   setPosition(element) {
-    this.css(element, { position: '', width: '', top: '', left: '' });
+   setPosition(element, useAnimationFrame) {
+    this.css(element, { position: '', width: '', top: '', left: '' }, useAnimationFrame);
 
     if ((this.vp.height < element.sticky.rect.height) || !element.sticky.active) {
       return;
@@ -283,7 +283,7 @@ class Sticky {
         display: 'block',
         width: element.sticky.rect.width + 'px',
         height: element.sticky.rect.height + 'px',
-      });
+      }, useAnimationFrame);
     }
 
     const wrapperTop = element.parentNode.offsetTop;
@@ -302,7 +302,7 @@ class Sticky {
         top: element.sticky.rect.top + 'px',
         left: element.sticky.rect.left + 'px',
         width: element.sticky.rect.width + 'px',
-      });
+      }, useAnimationFrame);
       if (element.sticky.stickyClass) {
         element.classList.add(element.sticky.stickyClass);
       }
@@ -311,7 +311,7 @@ class Sticky {
         position: passedAnchor ? 'relative' : 'fixed',
         width: element.sticky.rect.width + 'px',
         left: element.sticky.rect.left + 'px',
-      });
+      }, useAnimationFrame);
 
       if (
         (this.scrollTop + element.sticky.rect.height + element.sticky.marginTop)
@@ -324,12 +324,12 @@ class Sticky {
 
         if (passedAnchor) {
           this.css(element, {
-            top: (element.sticky.container.rect.top + element.sticky.container.offsetHeight) - (this.scrollTop + element.sticky.rect.height) + anchorTop - wrapperTop - elementHeight + 'px' }
-          );
+            top: (element.sticky.container.rect.top + element.sticky.container.offsetHeight) - (this.scrollTop + element.sticky.rect.height) + anchorTop - wrapperTop - elementHeight + 'px'
+          }, useAnimationFrame);
         } else {
           this.css(element, {
-            top: (element.sticky.container.rect.top + element.sticky.container.offsetHeight) - (this.scrollTop + element.sticky.rect.height + element.sticky.marginBottom) + 'px' }
-          );
+            top: (element.sticky.container.rect.top + element.sticky.container.offsetHeight) - (this.scrollTop + element.sticky.rect.height + element.sticky.marginBottom) + 'px'
+          }, useAnimationFrame);
         }
       } else {
         if (element.sticky.stickyClass) {
@@ -337,9 +337,9 @@ class Sticky {
         }
 
         if (passedAnchor) {
-          this.css(element, { top: anchorTop - wrapperTop - elementHeight + 'px' });
+          this.css(element, { top: anchorTop - wrapperTop - elementHeight + 'px' }, useAnimationFrame);
         } else {
-          this.css(element, { top: element.sticky.marginTop + 'px' });
+          this.css(element, { top: element.sticky.marginTop + 'px' }, useAnimationFrame);
         }
       }
     } else {
@@ -347,10 +347,10 @@ class Sticky {
         element.classList.remove(element.sticky.stickyClass);
       }
 
-      this.css(element, { position: '', width: '', top: '', left: '' });
+      this.css(element, { position: '', width: '', top: '', left: '' }, useAnimationFrame);
 
       if (element.sticky.wrap) {
-        this.css(element.parentNode, { display: '', width: '', height: '' });
+        this.css(element.parentNode, { display: '', width: '', height: '' }, useAnimationFrame);
       }
     }
    }
