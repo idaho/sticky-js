@@ -166,7 +166,14 @@ class Sticky {
    * @param {node} element - Element for which resize events are initialised
    */
    initResizeEvents(element) {
-    element.sticky.resizeListener = () => this.onResizeEvents(element);
+    let resizeTimeout;
+
+    element.sticky.resizeListener = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        this.onResizeEvents(element);
+      }, 250);
+    };
     window.addEventListener('resize', element.sticky.resizeListener);
    }
 
@@ -220,7 +227,11 @@ class Sticky {
    * @param {node} element - Element for which scroll events are initialised
    */
    initScrollEvents(element) {
-    element.sticky.scrollListener = () => this.onScrollEvents(element);
+    element.sticky.scrollListener = () => {
+      window.requestAnimationFrame(() => {
+        this.onScrollEvents(element);
+      });
+    };
     window.addEventListener('scroll', element.sticky.scrollListener);
    }
 
