@@ -186,6 +186,8 @@ function () {
       element.sticky.resizeListener = function () {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function () {
+          _this3.useAF = false;
+
           _this3.onResizeEvents(element);
         }, 250);
       };
@@ -218,8 +220,8 @@ function () {
         this.resetWrapperRectangle(element);
       }
 
-      element.sticky.rect = this.getRectangle(element, false);
-      element.sticky.container.rect = this.getRectangle(element.sticky.container, false);
+      element.sticky.rect = this.getRectangle(element);
+      element.sticky.container.rect = this.getRectangle(element.sticky.container);
 
       if (element.sticky.rect.top + element.sticky.rect.height < element.sticky.container.rect.top + element.sticky.container.rect.height && element.sticky.stickyFor < this.vp.width && !element.sticky.active) {
         element.sticky.active = true;
@@ -227,7 +229,7 @@ function () {
         element.sticky.active = false;
       }
 
-      this.setPosition(element, false);
+      this.setPosition(element);
     }
     /**
      * Function which is adding onScrollEvents to window listener and assigns function to element as scrollListener
@@ -269,6 +271,7 @@ function () {
     key: "onScrollEvents",
     value: function onScrollEvents(element) {
       if (element.sticky && element.sticky.active) {
+        this.useAF = true;
         this.setPosition(element);
       }
     }
@@ -280,13 +283,13 @@ function () {
 
   }, {
     key: "setPosition",
-    value: function setPosition(element, useAnimationFrame) {
+    value: function setPosition(element) {
       this.css(element, {
         position: '',
         width: '',
         top: '',
         left: ''
-      }, useAnimationFrame);
+      });
 
       if (this.vp.height < element.sticky.rect.height || !element.sticky.active) {
         return;
@@ -305,7 +308,7 @@ function () {
           display: 'block',
           width: element.sticky.rect.width + 'px',
           height: element.sticky.rect.height + 'px'
-        }, useAnimationFrame);
+        });
       }
 
       var wrapperTop = element.parentNode.offsetTop;
@@ -321,7 +324,7 @@ function () {
           top: element.sticky.rect.top + 'px',
           left: element.sticky.rect.left + 'px',
           width: element.sticky.rect.width + 'px'
-        }, useAnimationFrame);
+        });
 
         if (element.sticky.stickyClass) {
           element.classList.add(element.sticky.stickyClass);
@@ -331,7 +334,7 @@ function () {
           position: passedAnchor ? 'relative' : 'fixed',
           width: element.sticky.rect.width + 'px',
           left: element.sticky.rect.left + 'px'
-        }, useAnimationFrame);
+        });
 
         if (this.scrollTop + element.sticky.rect.height + element.sticky.marginTop > element.sticky.container.rect.top + element.sticky.container.offsetHeight - element.sticky.marginBottom) {
           if (element.sticky.stickyClass) {
@@ -355,11 +358,11 @@ function () {
           if (passedAnchor) {
             this.css(element, {
               top: anchorTop - wrapperTop - elementHeight + 'px'
-            }, useAnimationFrame);
+            });
           } else {
             this.css(element, {
               top: element.sticky.marginTop + 'px'
-            }, useAnimationFrame);
+            });
           }
         }
       } else {
@@ -372,14 +375,14 @@ function () {
           width: '',
           top: '',
           left: ''
-        }, useAnimationFrame);
+        });
 
         if (element.sticky.wrap) {
           this.css(element.parentNode, {
             display: '',
             width: '',
             height: ''
-          }, useAnimationFrame);
+          });
         }
       }
     }
@@ -453,13 +456,13 @@ function () {
 
   }, {
     key: "getRectangle",
-    value: function getRectangle(element, useAnimationFrame) {
+    value: function getRectangle(element) {
       this.css(element, {
         position: '',
         width: '',
         top: '',
         left: ''
-      }, useAnimationFrame);
+      });
       var width = Math.max(element.offsetWidth, element.clientWidth, element.scrollWidth);
       var height = Math.max(element.offsetHeight, element.clientHeight, element.scrollHeight);
       var top = 0;
@@ -522,13 +525,12 @@ function () {
      * @helper
      * @param {node} element - DOM element
      * @param {object} properties - CSS properties that will be added/removed from specified element
-     * @param {boolean} useAnimationFrame - if true requestAnimationFrame is used
      */
 
   }, {
     key: "css",
-    value: function css(element, properties, useAnimationFrame) {
-      if (useAnimationFrame !== false) {
+    value: function css(element, properties) {
+      if (this.useAF === true) {
         window.requestAnimationFrame(function () {
           for (var property in properties) {
             if (properties.hasOwnProperty(property)) {
