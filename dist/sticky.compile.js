@@ -344,11 +344,11 @@ function () {
           if (passedAnchor) {
             this.css(element, {
               top: element.sticky.container.rect.top + element.sticky.container.offsetHeight - (this.scrollTop + element.sticky.rect.height) + anchorTop - wrapperTop - elementHeight + 'px'
-            }, useAnimationFrame);
+            });
           } else {
             this.css(element, {
               top: element.sticky.container.rect.top + element.sticky.container.offsetHeight - (this.scrollTop + element.sticky.rect.height + element.sticky.marginBottom) + 'px'
-            }, useAnimationFrame);
+            });
           }
         } else {
           if (element.sticky.stickyClass) {
